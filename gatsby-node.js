@@ -25,6 +25,13 @@ exports.createPages = async gatsbyUtilities => {
 
   // And a paginated archive
   await createBlogPostArchive({ posts, gatsbyUtilities })
+
+  const pages = await getPosts(gatsbyUtilities)
+  // If there are no posts in WordPress, don't do anything
+  if (!pages.length) {
+    return
+  }
+  await createIndividualBlogPostPages({ posts: pages, gatsbyUtilities })
 }
 
 /**
@@ -163,4 +170,48 @@ async function getPosts({ graphql, reporter }) {
   }
 
   return graphqlResult.data.allWpPost.edges
+}
+
+/**
+ * This function queries Gatsby's GraphQL server and asks for
+ * All WordPress blog posts. If there are any GraphQL error it throws an error
+ * Otherwise it will return the posts 🙌
+ *
+ * We're passing in the utilities we got from createPages.
+ * So see https://www.gatsbyjs.com/docs/node-apis/#createPages for more info!
+ */
+async function getPages({ graphql, reporter }) {
+  const graphqlResult = await graphql(/* GraphQL */ `
+    query WpPages {
+      # Query all WordPress blog pages sorted by date
+      allWpPage(sort: { fields: [date], order: DESC }) {
+        edges {
+          previous {
+            id
+          }
+
+          # note: this is a GraphQL alias. It renames "node" to "post" for this query
+          # We're doing this because this "node" is a post! It makes our code more readable further down the line.
+          post: node {
+            id
+            uri
+          }
+
+          next {
+            id
+          }
+        }
+      }
+    }
+  `)
+
+  if (graphqlResult.errors) {
+    reporter.panicOnBuild(
+      `There was an error loading your blog posts`,
+      graphqlResult.errors
+    )
+    return
+  }
+
+  return graphqlResult.data.allWpPage.edges
 }

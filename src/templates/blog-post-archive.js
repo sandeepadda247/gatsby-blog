@@ -29,8 +29,6 @@ const BlogIndex = ({
     <Layout isHomePage>
       <Seo title="All posts" />
 
-      <Bio />
-
       <ol style={{ listStyle: `none` }}>
         {posts.map(post => {
           const title = post.title
