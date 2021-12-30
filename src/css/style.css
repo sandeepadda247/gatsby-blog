@@ -361,3 +361,20 @@ a:focus {
 .content-area {
   width: calc(100% - 300px);
 }
+
+.menu {
+  list-style: none;
+}
+
+.menu li {
+  display: inline-block;
+  margin: 0 10px;
+}
+.space-between {
+  justify-content: space-between;
+}
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
