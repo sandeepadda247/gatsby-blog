@@ -2,7 +2,7 @@ import React from "react"
 import { Link, useStaticQuery, graphql } from "gatsby"
 import parse from "html-react-parser"
 import RecentPostsWidget from "./recent-posts"
-import Menu from "./Menu"
+import Menu from "./menu"
 
 const Layout = ({ isHomePage, children }) => {
   const {
